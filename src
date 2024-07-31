@@ -1,0 +1,117 @@
+importar  pandas  como  pd 
+importar  solicitações 
+de  io  importar  StringIO 
+importar  matplotlib.pyplot  como  plt 
+importar  seaborn  como  sns 
+de  sklearn.model_selection  importar  train_test_split 
+de  sklearn.feature_extraction.text  importar  CountVectorizer 
+de  sklearn.naive_bayes  importar  MultinomialNB 
+de  sklearn.metrics  importar  accuracy_score ,  classification_report ,  confusion_matrix
+
+# Função para baixar o arquivo CSV do Google Drive 
+def  download_csv_from_drive ( url ): 
+    file_id  =  url . split ( '/' )[ - 2 ] 
+    download_url  =  f 'https://drive.google.com/uc?id= { file_id } ' 
+    response  =  requests . get ( download_url ) 
+    csv_data  =  StringIO ( response . text ) 
+    return  csv_data
+
+# Carregue o conjunto de dados 
+url  =  "https://drive.google.com/file/d/1Yt8X9u62TWW-dkH4Kn-XYo4LegUcX_Ix/view?usp=sharing" 
+data  =  download_csv_from_drive ( url ) 
+df  =  pd . read_csv ( dados )
+
+# Pré-processamento dos dados 
+df . dropna ( inplace = True )   # Remove linhas com valores ausentes 
+df [ 'product' ]  =  df [ 'product' ] . astype ( 'category' )   # Converte a coluna 'product' para categoria
+
+# Divisão dos dados em conjunto de treino e teste 
+X_train ,  X_test ,  y_train ,  y_test  =  train_test_split ( df [ 'narrativa' ],  df [ 'produto' ],  test_size = 0.2 ,  random_state = 42 )
+
+# Vetorização dos textos 
+vectorizer  =  CountVectorizer () 
+X_train_vect  =  vectorizer . fit_transform ( X_train ) 
+X_test_vect  =  vectorizer . transform ( X_test )
+
+#Treinamento do modelo Naive Bayes 
+model  =  MultinomialNB () 
+model . ajuste ( X_train_vect ,  y_train )
+
+# Avaliação do modelo 
+y_pred  =  model . predict ( X_test_vect ) 
+accuracy  =  accuracy_score ( y_test ,  y_pred ) 
+conf_matrix  =  confusion_matrix ( y_test ,  y_pred ) 
+class_report  =  classification_report ( y_test ,  y_pred )
+
+# Visualizações gráficas 
+# Histograma de distribuição das categorias de produtos 
+plt . figura ( figsize = ( 10 ,  6 )) 
+sns . countplot ( y = 'produto' , dados  = df , pedido  =  df  [ ' produto' ] .value_counts ( ) .índice ) plt . title ( 'Distribuição das Categorias de Produtos' ) plt . xlabel ( 'Número de Reclamações' ) plt . ylabel ( 'Categoria de Produto' ) plt . mostrar ()
+
+
+
+
+
+#Matriz de Confusão 
+plt . figura ( figsize = ( 10 ,  8 )) 
+sns . heatmap ( conf_matrix ,  annot = True ,  cmap = "Blues" ,  fmt = "d" ,  xticklabels = model . classes_ ,  yticklabels = model . classes_ ) 
+plt . title ( “Matriz de Confusão” ) 
+plt . xlabel ( "Classe Predita" ) 
+plt . ylabel ( "Classe Real" ) 
+plt . mostrar ()
+
+# Relatório de Classificação 
+print ( "Relatório de Classificação: \n " ,  class_report )
+
+# Palavras mais importantes para a classificação 
+feature_names  =  vectorizer . get_feature_names_out () 
+top_words  =  {} 
+for  i ,  class_label  in  enumerate ( model . classes_ ): 
+    word_count  =  model . feature_count_ [ i ] 
+    top_words [ class_label ]  =  [ feature_names [ index ]  for  index  in  word_count . argsort ()[ - 10 :][:: - 1 ]]
+
+print ( " \n Palavras mais importantes para a classificação de cada categoria de produto:" ) 
+para  categoria ,  palavras  em  top_words . itens (): 
+    print ( f " { categoria } : { ', ' . join ( palavras ) } " )
+
+# Conclusão
+print("\nConclusão:")
+print("O modelo de classificação atingiu uma acurácia de {:.2f}% na tarefa de categorização de reclamações.".format(accuracy*100))
+print("O desempenho do modelo varia para diferentes categorias de produtos, como evidenciado na matriz de confusão e no relatório de classificação.")
+print("A distribuição das predições do modelo em relação às categorias de produtos pode ser visualizada no histograma.")
+print("As palavras mais importantes para a classificação de cada categoria de produto foram identificadas e apresentadas.")
+print("O modelo demonstrou ser capaz de generalizar bem para novos dados, conforme evidenciado pela avaliação realizada.")
+
+# Dados Externos Relevantes: Não foram fornecidos dados externos relevantes.
+/opt/conda/envs/anaconda-2024.02-py310/lib/python3.10/site-packages/seaborn/categorical.py:641: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  grouped_vals = vals.groupby(grouper)
+No description has been provided for this image
+No description has been provided for this image
+Relatório de Classificação:
+                      precision    recall  f1-score   support
+
+        credit_card       0.64      0.78      0.70      3132
+   credit_reporting       0.92      0.84      0.88     18283
+    debt_collection       0.73      0.68      0.71      4615
+mortgages_and_loans       0.71      0.87      0.78      3770
+     retail_banking       0.79      0.89      0.84      2683
+
+           accuracy                           0.82     32483
+          macro avg       0.76      0.81      0.78     32483
+       weighted avg       0.83      0.82      0.82     32483
+
+
+Palavras mais importantes para a classificação de cada categoria de produto:
+credit_card: card, credit, account, payment, bank, charge, would, time, one, received
+credit_reporting: credit, account, report, information, reporting, consumer, payment, dispute, letter, day
+debt_collection: debt, credit, account, collection, report, company, information, letter, received, payment
+mortgages_and_loans: payment, loan, mortgage, would, account, time, credit, told, company, received
+retail_banking: account, bank, money, would, day, told, check, fund, time, transaction
+
+Conclusão:
+O modelo de classificação atingiu uma acurácia de 82.13% na tarefa de categorização de reclamações.
+O desempenho do modelo varia para diferentes categorias de produtos, como evidenciado na matriz de confusão e no relatório de classificação.
+A distribuição das predições do modelo em relação às categorias de produtos pode ser visualizada no histograma.
+As palavras mais importantes para a classificação de cada categoria de produto foram identificadas e apresentadas.
+O modelo demonstrou ser capaz de generalizar bem para novos dados, conforme evidenciado pela avaliação realizada.
+ 
