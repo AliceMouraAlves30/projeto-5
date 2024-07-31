@@ -1,0 +1,70 @@
+# Classificação de Reclamações por Categoria de Produto
+
+Este projeto realiza a classificação de reclamações de clientes em diferentes categorias de produtos financeiros utilizando o algoritmo Naive Bayes. O código lê os dados de um arquivo CSV, realiza o pré-processamento, treina o modelo e avalia seu desempenho.
+
+## Estrutura do Projeto
+
+- `classificacao_reclamacoes.py`: Script principal contendo todo o código para download dos dados, pré-processamento, treinamento do modelo e geração de visualizações.
+- `README.md`: Este arquivo, fornecendo uma visão geral do projeto.
+- `LICENSE`: Licença do projeto.
+- `.gitignore`: Arquivo para especificar quais arquivos e diretórios devem ser ignorados pelo Git.
+
+## Requisitos
+
+- Python 3.x
+- Bibliotecas:
+  - pandas
+  - requests
+  - matplotlib
+  - seaborn
+  - scikit-learn
+
+## Instalação
+
+1. Clone este repositório:
+    ```bash
+    git clone https://github.com/seu-usuario/classificacao-reclamacoes.git
+    cd classificacao-reclamacoes
+    ```
+
+2. Crie um ambiente virtual e ative-o:
+    ```bash
+    python -m venv env
+    source env/bin/activate  # Para Windows, use `env\Scripts\activate`
+    ```
+
+3. Instale as dependências:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+## Uso
+
+1. Certifique-se de que a URL do arquivo CSV do Google Drive está correta no script `classificacao_reclamacoes.py`.
+
+2. Execute o script:
+    ```bash
+    python classificacao_reclamacoes.py
+    ```
+
+3. O script irá realizar a classificação das reclamações e gerar relatórios de desempenho e visualizações gráficas.
+
+## Resultados
+
+- **Relatório de Classificação**: Precisão, recall e f1-score para cada categoria.
+- **Matriz de Confusão**: Desempenho do modelo para diferentes categorias.
+- **Histograma de Distribuição**: Distribuição das categorias de produtos.
+- **Palavras mais importantes**: Palavras mais influentes para a classificação de cada categoria de produto.
+
+## Contribuição
+
+Contribuições são bem-vindas! Por favor, abra uma issue ou envie um pull request.
+
+## Licença
+
+Este projeto está licenciado sob os termos da licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+
+## Contato
+
+- Autor: Seu Nome
+- Email: seu-email@example.com
